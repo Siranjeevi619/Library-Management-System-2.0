@@ -10,6 +10,9 @@ function App() {
     <div className="App">
       <Navbar />
       <BookCard />
+      <BookCard />
+      <BookCard />
+      <BookCard />
       <Footer />
     </div>
   );
