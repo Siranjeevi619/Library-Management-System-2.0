@@ -1,8 +1,7 @@
-package com.book.Service;
-
+package com.book.service;
 
 import com.book.Model.Book;
-import com.book.Repository.BookRepository;
+import com.book.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,18 +9,22 @@ import java.util.List;
 
 @Service
 public class BookService {
+
     @Autowired
     private BookRepository bookRepository;
 
-    public List<Book> findAll() {
+    public List<com.book.Model.Book> findAll() {
         return bookRepository.findAll();
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id).get();
+        return bookRepository.findById(id).orElse(null);
     }
-    public Book findByTitle(String title) {
-//        return bookRepository.
-        return null;
+
+    public Book addBook(Book book) {
+        return bookRepository.save(book);
     }
+
+    // Optional: Implement findByTitle() if needed
+
 }
