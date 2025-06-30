@@ -4,7 +4,9 @@
 import BookCard from "./components/bookCard";
 import Footer from "./layout/Footer";
 import Navbar from "./layout/Header/Navbar";
+import BookListPage from "./pages/Books";
 import HomePage from "./pages/Home";
+import RouterComp from "./router";
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
       <BookCard />
       <BookCard />
       <BookCard /> */}
-      <HomePage />
+      {/* <HomePage /> */}
+      {/* <BookListPage /> */}
+      <RouterComp />
       <Footer />
     </div>
   );

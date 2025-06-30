@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [navCollapsed, setNavCollapsed] = useState(true);
-
+  const navigate = useNavigate();
   return (
     <nav className="navbar navbar-expand-md bg-light py-2 shadow-sm">
       <div className="container">
-        {/* Brand */}
         <a className="navbar-brand d-flex align-items-center gap-2" href="/">
           <img
             src="/logo192.png"
@@ -20,7 +20,6 @@ const Navbar = () => {
           <h4 className="mb-0 fw-bold">Lib</h4>
         </a>
 
-        {/* Toggler for mobile */}
         <button
           className="navbar-toggler"
           type="button"
@@ -32,7 +31,6 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Collapsible content */}
         <div
           className={`collapse navbar-collapse ${!navCollapsed ? "show" : ""}`}
           id="navbarContent"
@@ -60,11 +58,11 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* User Icon with Dropdown */}
           <div
             className="nav-item dropdown position-relative ms-md-3"
             onMouseEnter={() => setShowDropdown(true)}
             onMouseLeave={() => setShowDropdown(false)}
+            onClick={() => navigate("/profile")}
           >
             <span className="nav-link" style={{ cursor: "pointer" }}>
               <FaUserCircle size={28} />
@@ -90,7 +88,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Global Custom Styles */}
       <style>{`
         .custom-nav-link {
           transition: color 0.2s;
