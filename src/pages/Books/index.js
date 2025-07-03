@@ -1,42 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BookCard from "../../components/bookCard/index.jsx"; // Adjust as needed
-
-const books = [
-  {
-    id: "1",
-    title: "Atomic Habits",
-    author: "James Clear",
-    price: "799",
-    image:
-      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80",
-  },
-  {
-    id: "2",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    price: "499",
-    image:
-      "https://images.unsplash.com/photo-1586489996316-30e07d060cfb?w=800&q=80",
-  },
-  {
-    id: "3",
-    title: "Ikigai",
-    author: "Héctor García",
-    price: "599",
-    image:
-      "https://images.unsplash.com/photo-1590608897129-79da98d159d9?w=800&q=80",
-  },
-  {
-    id: "4",
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kiyosaki",
-    price: "699",
-    image:
-      "https://images.unsplash.com/photo-1522202221444-95f1040a5141?w=800&q=80",
-  },
-];
+import axios from "axios";
 
 const BookListPage = () => {
+  const [books, setBooks] = useState([]);
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/book/all");
+        console.log(response.data.data);
+        setBooks(response.data.data || []);
+      } catch (error) {
+        console.log(error);
+        setBooks([]);
+      }
+    };
+    fetchDetails();
+  }, []);
+
   return (
     <div className="container py-5">
       <h2 className="text-center mb-5 fw-bold">Explore Our Books</h2>

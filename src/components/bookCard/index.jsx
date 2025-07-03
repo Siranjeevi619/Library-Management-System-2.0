@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const BookCard = ({
@@ -11,6 +12,24 @@ const BookCard = ({
   onBuyNow,
 }) => {
   const navigate = useNavigate();
+  const [imageData, setImageData] = useState(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/book/image/${id}`
+        );
+        if (response.data.status === "SUCCESS") {
+          setImageData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+    fetchImage();
+  }, [id]);
 
   return (
     <div
@@ -29,17 +48,22 @@ const BookCard = ({
         className="d-flex justify-content-center align-items-center"
         style={{ height: 220, padding: 16 }}
       >
-        <img
-          src={image}
-          alt={title}
-          style={{
-            maxHeight: "100%",
-            maxWidth: "100%",
-            objectFit: "contain",
-            borderRadius: "8px",
-          }}
-        />
+        {imageData ? (
+          <img
+            src={`data:image/jpeg;base64,${imageData}`}
+            alt={title}
+            style={{
+              maxHeight: "100%",
+              maxWidth: "100%",
+              objectFit: "contain",
+              borderRadius: "8px",
+            }}
+          />
+        ) : (
+          <p>Loading image...</p>
+        )}
       </div>
+
       <div className="card-body text-center px-3">
         <h5
           className="card-title mb-1"
