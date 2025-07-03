@@ -23,4 +23,5 @@ public class Book {
     private String description;
     private String imageUrl;
     private double price;
+//    private String imageUrl;
 }
