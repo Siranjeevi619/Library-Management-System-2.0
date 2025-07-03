@@ -1,10 +1,7 @@
 package com.book.Model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +18,8 @@ public class Book {
     private String author;
     private String publisher;
     private String description;
-    private String imageUrl;
+    @Lob
+    private byte[] image;
     private double price;
+//    private String imageUrl;
 }
