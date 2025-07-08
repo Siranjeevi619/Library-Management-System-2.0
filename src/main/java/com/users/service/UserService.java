@@ -5,6 +5,7 @@ import com.users.payload.ApiResponse;
 import com.users.payload.Status;
 import com.users.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public List<User> getAllUsers() {
@@ -39,7 +43,7 @@ public class UserService {
 
     public ApiResponse<User> login(String email, String password) {
         Optional<User> userOpt = userRepo.findUserByEmail((email));
-        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(password)) {
+        if(userOpt.isEmpty() || passwordEncoder.matches(userOpt.get().getPassword(), password)){
             return new ApiResponse<>(Status.FAILED, "Invalid credentials", null);
         }
         return new ApiResponse<>(Status.SUCCESS, "Login successful", userOpt.get());

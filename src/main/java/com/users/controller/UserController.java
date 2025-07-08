@@ -9,6 +9,7 @@ import com.users.payload.Status;
 import com.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +21,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/all")
@@ -42,7 +47,7 @@ public class UserController {
             User user = new User();
             user.setName(registerUser.getName());
             user.setEmail(registerUser.getEmail());
-            user.setPassword(registerUser.getPassword());
+            user.setPassword(passwordEncoder.encode(registerUser.getPassword()));
 
             response = userService.signup(user);
 
