@@ -28,7 +28,7 @@ public class UserService {
 
     public ApiResponse<User> signup(User user) {
         try{
-            Optional<User> users = userRepo.findByEmail((user.getEmail()));
+            Optional<User> users = userRepo.findUserByEmail((user.getEmail()));
             if(users.isPresent()){
                 return new ApiResponse<>(Status.FAILED, "User Already Exists", null);
             }
