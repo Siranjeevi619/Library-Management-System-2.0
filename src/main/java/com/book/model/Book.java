@@ -1,4 +1,4 @@
-package com.book.Model;
+package com.book.model;
 
 
 import jakarta.persistence.*;
@@ -18,8 +18,8 @@ public class Book {
     private String author;
     private String publisher;
     private String description;
-    @Lob
-    private byte[] image;
+    private String imageUrl;
+
     private double price;
 //    private String imageUrl;
 }
