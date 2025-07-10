@@ -45,13 +45,22 @@ public class BookController {
         }
     }
 
-    // Get book by ID
     @GetMapping("/{id}")
-    public Book bookListById(@PathVariable int id) {
-        return bookService.findBookById((long) id);
+    public ResponseEntity<ApiResponse<Book>> bookListById(@PathVariable int id) {
+        try {
+            Book book = bookService.findBookById((long) id);
+            if (book == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse<>(Status.REJECTED, "Book not found with ID: " + id, null));
+            }
+            return ResponseEntity.ok(new ApiResponse<>(Status.SUCCESS, "Book found", book));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(Status.REJECTED, e.getMessage(), null));
+        }
     }
 
-    // Add book with image upload
+
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> addBook(
             @RequestPart("book") BookDTO bookDTO,
@@ -84,7 +93,7 @@ public class BookController {
     }
 
     @GetMapping("/image/{fileName:.+}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
+    public ResponseEntity<ApiResponse<?>> getImage(@PathVariable String fileName) {
         try {
             Path imagePath = Paths.get(uploadDir).resolve(fileName).normalize();
             byte[] imageBytes = Files.readAllBytes(imagePath);
@@ -97,9 +106,9 @@ public class BookController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType(contentType));
 
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+            return  ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "Image Fetched Successfully", imageBytes));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return  ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "Internal Server Error: "+e.getMessage(), e));
         }
     }
 }
