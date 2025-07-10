@@ -51,7 +51,7 @@ public class BookController {
             Book book = bookService.findBookById((long) id);
             if (book == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse<>(Status.REJECTED, "Book not found with ID: " + id, null));
+                        .body(new ApiResponse<>(Status.FAILED, "Book not found with ID: " + id, null));
             }
             return ResponseEntity.ok(new ApiResponse<>(Status.SUCCESS, "Book found", book));
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class BookController {
 
             return  ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "Image Fetched Successfully", imageBytes));
         } catch (Exception e) {
-            return  ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "Internal Server Error: "+e.getMessage(), e));
+            return  ResponseEntity.status(200).body(new ApiResponse<>(Status.REJECTED, "Internal Server Error: "+e.getMessage(), e));
         }
     }
 }
