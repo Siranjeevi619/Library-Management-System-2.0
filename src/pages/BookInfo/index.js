@@ -1,33 +1,26 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-
-const books = [
-  {
-    id: "1",
-    title: "Atomic Habits",
-    author: "James Clear",
-    price: "799",
-    description: "A proven framework to build better habits.",
-    image:
-      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80",
-  },
-  {
-    id: "2",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    price: "499",
-    description: "An inspiring tale about following your dreams.",
-    image:
-      "https://images.unsplash.com/photo-1586489996316-30e07d060cfb?w=800&q=80",
-  },
-];
 
 const BookInfoPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const book = books.find((b) => b.id === id);
+  const [bookData, setBookData] = useState(null);
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+  const fetchDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/book/${id}`);
+      console.log(response.data);
+      setBookData(response.data);
+      
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-  if (!book) return <p className="text-center mt-5">Book not found.</p>;
+  if (!bookData) return <p className="text-center mt-5">Book not found.</p>;
 
   return (
     <div className="container py-5">
@@ -36,8 +29,8 @@ const BookInfoPage = () => {
         <div className="col-md-5 text-center">
           <img
             href="#"
-            src={book.image}
-            alt={book.title}
+            src={`http://localhost:8080${bookData.imageUrl}`}
+            alt={bookData.title}
             className="img-fluid rounded-3 shadow-sm"
             style={{ maxHeight: "480px", objectFit: "contain" }}
           />
@@ -45,10 +38,10 @@ const BookInfoPage = () => {
 
         {/* Book Info */}
         <div className="col-md-7">
-          <h1 className="fw-bold mb-2">{book.title}</h1>
-          <h5 className="text-muted mb-3">by {book.author}</h5>
-          <h4 className="text-danger mb-3">₹{book.price}</h4>
-          <p className="text-secondary mb-4">{book.description}</p>
+          <h1 className="fw-bold mb-2">{bookData.title}</h1>
+          <h5 className="text-muted mb-3">by {bookData.author}</h5>
+          <h4 className="text-danger mb-3">₹{bookData.price}</h4>
+          <p className="text-secondary mb-4">{bookData.description}</p>
 
           <div className="d-flex gap-3">
             <button
