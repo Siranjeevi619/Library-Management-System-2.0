@@ -111,4 +111,20 @@ public class BookController {
             return  ResponseEntity.status(200).body(new ApiResponse<>(Status.REJECTED, "Internal Server Error: "+e.getMessage(), e));
         }
     }
+
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<ApiResponse<?>> deleteAllBooks(){
+        try{
+            List<Book> books = bookService.deleteAll();
+            if(books.isEmpty()){
+                return ResponseEntity.status(400).body(new ApiResponse<>(Status.FAILED, "BOOK LIST IS EMPTY", books));
+            }
+            return ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "BOOKS DELETED SUCCESSFULLY AND BOOKS FOUND: "+books.size() , books));
+
+        }
+        catch(Exception e){
+            return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL_SERVER_ERROR : "+e.getMessage(), e));
+        }
+    }
 }

@@ -25,4 +25,10 @@ public class BookService {
     public void  saveBook(Book book) {
         bookRepository.save(book);
     }
+
+    public List<Book> deleteAll() {
+        List<Book> books = bookRepository.findAll();
+         bookRepository.deleteAll();
+         return books;
+    }
 }
