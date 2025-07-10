@@ -53,7 +53,7 @@ public class BookController {
 
     // Add book with image upload
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addBook(
+    public ResponseEntity<ApiResponse<?>> addBook(
             @RequestPart("book") BookDTO bookDTO,
             @RequestPart("image") MultipartFile imageFile) {
         try {
@@ -73,18 +73,16 @@ public class BookController {
             book.setDescription(bookDTO.getDescription());
             book.setPrice(bookDTO.getPrice());
 
-            // Save only the relative path to be used in frontend
             book.setImageUrl("/api/book/image/" + fileName);
 
             bookService.saveBook(book);
-            return ResponseEntity.ok("Book added successfully!");
+            return ResponseEntity.status(200).body(new  ApiResponse<>(Status.SUCCESS, "Book Added Successfully", book));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL SERVER ERROR: "+e.getMessage(), e ));
         }
     }
 
-    // Serve image file to browser
     @GetMapping("/image/{fileName:.+}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
         try {
