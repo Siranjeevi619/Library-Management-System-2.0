@@ -1,5 +1,3 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const BookCard = ({
@@ -12,24 +10,6 @@ const BookCard = ({
   onBuyNow,
 }) => {
   const navigate = useNavigate();
-  const [imageData, setImageData] = useState(null);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/book/image/${id}`
-        );
-        if (response.data.status === "SUCCESS") {
-          setImageData(response.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      }
-    };
-
-    fetchImage();
-  }, [id]);
 
   return (
     <div
@@ -48,9 +28,9 @@ const BookCard = ({
         className="d-flex justify-content-center align-items-center"
         style={{ height: 220, padding: 16 }}
       >
-        {imageData ? (
+        {image ? (
           <img
-            src={`data:image/jpeg;base64,${imageData}`}
+            src={`http://localhost:8080${image}`}
             alt={title}
             style={{
               maxHeight: "100%",
@@ -60,7 +40,7 @@ const BookCard = ({
             }}
           />
         ) : (
-          <p>Loading image...</p>
+          <p>No Image</p>
         )}
       </div>
 

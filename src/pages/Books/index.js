@@ -32,7 +32,7 @@ const BookListPage = () => {
               title={book.title}
               author={book.author}
               price={book.price}
-              image={book.image}
+              image={book.imageUrl} 
               onAddToCart={() => alert(`Added "${book.title}" to cart`)}
               onBuyNow={() => alert(`Buying "${book.title}" now`)}
             />
