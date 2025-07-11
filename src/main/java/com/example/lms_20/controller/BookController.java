@@ -29,7 +29,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // Get all books
+
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<Book>>> bookList() {
         try {
@@ -112,24 +112,40 @@ public class BookController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<?>> updateBook(@PathVariable("id") long id, @RequestBody Book book){
-        try{
-            Book fetchDetails = bookService.findBookById(id);
-            if(fetchDetails == null){
-                return ResponseEntity.status(404).body(new ApiResponse<>(Status.FAILED, "BOOK NOT FOUND", null));
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<?>> updateBook(
+            @PathVariable("id") long id,
+            @RequestPart("book") BookDTO bookDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        try {
+            Book existingBook = bookService.findBookById(id);
+            if (existingBook == null) {
+                return ResponseEntity.status(404)
+                        .body(new ApiResponse<>(Status.FAILED, "BOOK NOT FOUND", null));
             }
-            fetchDetails.setTitle(book.getTitle());
-            fetchDetails.setAuthor(book.getAuthor());
-            fetchDetails.setPublisher(book.getPublisher());
-            fetchDetails.setDescription(book.getDescription());
-            fetchDetails.setImageUrl(book.getImageUrl());
-            return ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "BOOK UPDATED SUCCESSFULLY",fetchDetails ));
 
+            existingBook.setTitle(bookDTO.getTitle());
+            existingBook.setAuthor(bookDTO.getAuthor());
+            existingBook.setPublisher(bookDTO.getPublisher());
+            existingBook.setDescription(bookDTO.getDescription());
+            existingBook.setPrice(bookDTO.getPrice());
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String fileName = imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                existingBook.setImageUrl("/api/book/image/" + fileName);
+            }
 
-        }
-        catch(Exception e){
-            return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL_SERVER_ERROR", e));
+            bookService.saveBook(existingBook);
+
+            return ResponseEntity.ok(new ApiResponse<>(Status.SUCCESS, "BOOK UPDATED SUCCESSFULLY", existingBook));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(new ApiResponse<>(Status.REJECTED, "INTERNAL_SERVER_ERROR", e));
         }
     }
 
@@ -146,6 +162,21 @@ public class BookController {
         }
         catch(Exception e){
             return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL_SERVER_ERROR : "+e.getMessage(), e));
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteBookById(@PathVariable("id") long id){
+        try{
+            Book book = bookService.findBookById(id);
+            if(book == null){
+                return  ResponseEntity.status(404).body(new ApiResponse<>(Status.FAILED, "BOOK NOT FOUND", null));
+            }
+            bookService.deleteBook(id);
+            return ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "BOOK DELETED SUCCESSFULLY", book));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL SERVER ERROR"+e.getMessage() , e));
         }
     }
 }
