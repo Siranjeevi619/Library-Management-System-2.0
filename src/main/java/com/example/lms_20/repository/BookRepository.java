@@ -1,6 +1,6 @@
-package com.book.repository;
+package com.example.lms_20.repository;
 
-import com.book.model.Book;
+import com.example.lms_20.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

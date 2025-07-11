@@ -1,9 +1,8 @@
-package com.book.payload;
+package com.example.lms_20.payload;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.http.HttpStatusCode;
 
 @Data
 @AllArgsConstructor

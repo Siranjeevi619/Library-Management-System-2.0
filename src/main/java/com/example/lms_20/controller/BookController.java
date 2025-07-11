@@ -1,10 +1,10 @@
-package com.book.controller;
+package com.example.lms_20.controller;
 
-import com.book.model.Book;
-import com.book.model.BookDTO;
-import com.book.payload.ApiResponse;
-import com.book.payload.Status;
-import com.book.service.BookService;
+import com.example.lms_20.model.Book;
+import com.example.lms_20.model.BookDTO;
+import com.example.lms_20.payload.ApiResponse;
+import com.example.lms_20.payload.Status;
+import com.example.lms_20.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -109,6 +109,27 @@ public class BookController {
             return  ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "Image Fetched Successfully", imageBytes));
         } catch (Exception e) {
             return  ResponseEntity.status(200).body(new ApiResponse<>(Status.REJECTED, "Internal Server Error: "+e.getMessage(), e));
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse<?>> updateBook(@PathVariable("id") long id, @RequestBody Book book){
+        try{
+            Book fetchDetails = bookService.findBookById(id);
+            if(fetchDetails == null){
+                return ResponseEntity.status(404).body(new ApiResponse<>(Status.FAILED, "BOOK NOT FOUND", null));
+            }
+            fetchDetails.setTitle(book.getTitle());
+            fetchDetails.setAuthor(book.getAuthor());
+            fetchDetails.setPublisher(book.getPublisher());
+            fetchDetails.setDescription(book.getDescription());
+            fetchDetails.setImageUrl(book.getImageUrl());
+            return ResponseEntity.status(200).body(new ApiResponse<>(Status.SUCCESS, "BOOK UPDATED SUCCESSFULLY",fetchDetails ));
+
+
+        }
+        catch(Exception e){
+            return ResponseEntity.status(500).body(new ApiResponse<>(Status.REJECTED, "INTERNAL_SERVER_ERROR", e));
         }
     }
 

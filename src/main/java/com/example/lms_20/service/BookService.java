@@ -1,10 +1,9 @@
-package com.book.service;
+package com.example.lms_20.service;
 
-import com.book.model.Book;
-import com.book.repository.BookRepository;
+import com.example.lms_20.model.Book;
+import com.example.lms_20.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<com.book.model.Book> findAll() {
+    public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
@@ -31,4 +30,6 @@ public class BookService {
          bookRepository.deleteAll();
          return books;
     }
+
+
 }
